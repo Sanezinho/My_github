@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Git & GitHub — Conceitos, Fluxo e Passo a Passo (Conflitos)</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="wrap header-wrap">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">GIT</div>
+        <div class="identity">
+          <h1>Git & GitHub — Conceitos, Fluxo e Passo a Passo</h1>
+          <p class="subtitle">
+            Página com explicações, fluxo recomendado e passo a passo para resolução de conflitos (espaço para imagens).
+          </p>
+        </div>
+      </div>
+
+      <nav class="site-nav" aria-label="Navegação principal">
+        <a class="btn" href="#conceitos">Conceitos</a>
+        <a class="btn" href="#fluxo">Fluxo Git/GitHub</a>
+        <a class="btn" href="#passo-a-passo">Passo a passo (conflitos)</a>
+        <a class="btn" href="#comandos">Comandos úteis</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo" class="wrap layout">
+    <!-- Coluna principal -->
+    <section class="content">
+      <!-- Conceitos -->
+      <section id="conceitos" class="card section">
+        <h2>Conceitos essenciais</h2>
+        <dl class="glossary">
+          <div class="term">
+            <dt>Repositório (repo)</dt>
+            <dd>Local onde o histórico de versões do projeto é armazenado. Pode ser local (máquina) ou remoto (GitHub).</dd>
+          </div>
+
+          <div class="term">
+            <dt>Commit</dt>
+            <dd>Uma "foto" do estado do projeto. Contém autor, mensagem e um hash único.</dd>
+          </div>
+
+          <div class="term">
+            <dt>Branch</dt>
+            <dd>Linha de desenvolvimento isolada. Ex.: <code>main</code>, <code>feature/login</code>.</dd>
+          </div>
+
+          <div class="term">
+            <dt>Merge</dt>
+            <dd>Operação que junta o histórico de duas branches.</dd>
+          </div>
+
+          <div class="term">
+            <dt>Pull request (PR)</dt>
+            <dd>Mecanismo do GitHub para revisar/mesclar mudanças entre branches remotas.</dd>
+          </div>
+
+          <div class="term">
+            <dt>Clone / Fork</dt>
+            <dd><strong>Clone:</strong> cópia do repo remoto para seu ambiente. <strong>Fork:</strong> cópia do repo para sua conta no GitHub.</dd>
+          </div>
+
+          <div class="term">
+            <dt>Remote</dt>
+            <dd>Referência para repositório remoto (ex.: <code>origin</code>).</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Fluxo -->
+      <section id="fluxo" class="card section">
+        <div class="section-head">
+          <h2>Fluxo recomendado (ex.: Feature Branch Workflow)</h2>
+          <p class="lead">Um fluxo simples e comum para times pequenos/medianos.</p>
+        </div>
+
+        <div class="flow">
+          <figure class="diagram">
+            <img src="assets/img/diagrama.png" alt="Diagrama do fluxo Git: main ← PR ← feature branches → revisão → merge" />
+            <figcaption>Ex.: main ← PR ← feature branches → revisão → merge</figcaption>
+          </figure>
+
+          <div class="steps">
+            <article class="step">
+              <h3>1. Criar branch de feature</h3>
+              <img src="assets/img/criar-branch.png" alt="Criar Branch" />
+            </article>
+
+            <article class="step">
+              <h3>2. Desenvolver e commitar</h3>
+              <img src="assets/img/commits.png" alt="Commitar mudanças" />
+            </article>
+
+            <article class="step">
+              <h3>3. Push e abrir PR</h3>
+              <img src="assets/img/pr.png" alt="Abrir Pull Request" />
+            </article>
+
+            <article class="step">
+              <h3>4. Merge</h3>
+              <img src="assets/img/merge.png" alt="Merge das alterações" />
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Passo a passo conflitos -->
+      <section id="passo-a-passo" class="card section">
+        <h2>Passo a passo: Resolver conflitos de merge</h2>
+
+        <ol class="steps-list">
+          <li class="steps-item">
+            <h3>Atualize seu repositório local</h3>
+            <pre><code>git fetch
+git checkout feature/sua-branch
+git pull origin main --rebase
+git push origin feature/sua-branch --force-with-lease</code></pre>
+
+            <figure class="shot">
+              <img src="assets/img/processo-de-rebase.png" alt="Processo de Rebase" />
+            </figure>
+
+            <p class="note">
+              O rebase traz as alterações da <code>main</code> para sua branch (mantém histórico linear). Se preferir, use <code>git merge origin/main</code>.
+            </p>
+          </li>
+
+          <li class="steps-item">
+            <h3>Tente mesclar (se não usou rebase)</h3>
+            <pre><code>git merge origin/main</code></pre>
+            <p class="note">Se houver conflitos, o Git vai parar e sinalizar os arquivos.</p>
+          </li>
+
+          <li class="steps-item">
+            <h3>Identifique arquivos com conflito</h3>
+            <pre><code>git status</code></pre>
+            <figure class="shot">
+              <img src="assets/img/status.png" alt="Status da Branch" />
+            </figure>
+          </li>
+
+          <li class="steps-item">
+            <h3>Abra os arquivos e resolva conflitos</h3>
+            <pre><code>&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+(sua versão)
+=======
+(versão de origin/main)
+&gt;&gt;&gt;&gt;&gt;&gt; origin/main</code></pre>
+            <figure class="shot">
+              <img src="assets/img/conflito.png" alt="Exemplo de conflitos" />
+            </figure>
+            <p class="note">Remova os marcadores e edite para a versão final desejada.</p>
+          </li>
+
+          <li class="steps-item">
+            <h3>Marque como resolvido e commit</h3>
+            <pre><code>git add &lt;arquivo-resolvido&gt;
+git commit -m "Resolve conflito: arquivo X"</code></pre>
+          </li>
+
+          <li class="steps-item">
+            <h3>Atualize o remoto</h3>
+            <pre><code>git push origin feature/sua-branch</code></pre>
+            <figure class="shot">
+              <img src="assets/img/pr.png" alt="Push das mudanças" />
+            </figure>
+            <p class="note">
+              Se você usou <code>rebase</code>, pode ser necessário forçar o push: <code>git push --force-with-lease</code> (use com cautela).
+            </p>
+          </li>
+        </ol>
+
+        <aside class="tips">
+          <h3>Dicas rápidas</h3>
+          <ul>
+            <li>Faça commits pequenos e mensagens descritivas.</li>
+            <li>Atualize sua branch com frequência para reduzir conflitos.</li>
+            <li>Use <code>--force-with-lease</code> em vez de <code>--force</code> para pushes após rebase.</li>
+            <li>Se o conflito for complexo, crie uma branch de apoio para isolar a resolução.</li>
+          </ul>
+        </aside>
+      </section>
+
+      <!-- Comandos -->
+      <section id="comandos" class="card section">
+        <h2>Comandos úteis (resumo)</h2>
+        <pre><code># Informações
+git status
+
+# Mudar branch
+git checkout -b minha-branch
+
+# Mesclar
+git fetch origin
+git merge origin/main
+
+# Rebase
+git pull --rebase origin main
+
+# Forçar push (use com cuidado)
+git push --force-with-lease</code></pre>
+      </section>
+    </section>
+
+    <!-- Coluna lateral -->
+    <aside class="sidebar">
+      <section class="card sticky">
+        <h2>Comandos rápidos</h2>
+        <pre><code>git clone &lt;url&gt;
+git checkout -b feature/nova
+git add .
+git commit -m "mensagem"
+git push origin feature/nova
+
+# Para atualizar sua branch com main
+git fetch origin
+git merge origin/main
+
+# Resolver conflitos, depois:
+git add &lt;arquivo&gt;
+git commit
+git push</code></pre>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Trabalho de HTML estático, explicando os processos do Git & GitHub.</p>
+    </div>
+  </footer>
+</body>
+</html>
